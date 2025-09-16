@@ -72,6 +72,8 @@ int are_diag_mag(int m[N][N]) {
 
 void eh_magico(int m[N][N]) {
   int eh_magico = is_col_mag(m) && is_lin_mag(m) && are_diag_mag(m);
+  // This creates false positives, since each evaluation might use a different
+  // reference
   if (eh_magico != 1) {
     printf("Este quadrado não é mágico");
   } else {
