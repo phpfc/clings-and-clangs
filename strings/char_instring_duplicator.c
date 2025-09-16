@@ -9,7 +9,8 @@ int main() {
   int j = 0;
   printf("Digite uma palavra\n");
 
-  scanf("%s", string);
+  fgets(string, sizeof(string), stdin);
+  string[strcspn(string, "\n")] = '\0';
 
   size_t strLen = strlen(string);
 
