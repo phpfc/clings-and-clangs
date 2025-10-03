@@ -31,23 +31,33 @@ bool is_prime(int num) {
 }
 
 void get_matrix_min_prime(int m[N][N], int *min_prime, int *row, int *col) {
+  bool has_primes = false;
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
       if (*min_prime > m[i][j] && is_prime(m[i][j])) {
         *min_prime = m[i][j];
         *row = i;
         *col = j;
+        has_primes = true;
       }
     }
   }
+
+  if (has_primes == false) {
+    *min_prime = -1;
+    *row = -1;
+    *col = -1;
+  }
 }
 
-void create_matrix(int m[N][N]) {
+void create_matrix(int m[N][N], bool primeless) {
   int ground = 12;
   srand(time(NULL));
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
-      m[i][j] = (rand() % (100 - ground)) + ground;
+      int val = m[i][j] = (rand() % (100 - ground)) + ground;
+      if (primeless && val % 2 != 0) val++;
+      m[i][j] = val;
     }
   }
 }
@@ -67,7 +77,7 @@ int main() {
   int idx_row = 0;
   int idx_col = 0;
 
-  create_matrix(matrix);
+  create_matrix(matrix, true);
   print_matrix(matrix);
   get_matrix_min_prime(matrix, &min_prime, &idx_row, &idx_col);
 
