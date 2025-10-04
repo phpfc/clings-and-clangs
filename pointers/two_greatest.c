@@ -22,8 +22,19 @@ void two_greatest(char str[], int *first, int *second) {
   *first = *second = -1;
 
   char *token = strtok(str, "#");
+  /*
+    strtok separa uma string de acordo com um delimitador.
+    Ele insere um '\0' antes do delimitador, e retorna um
+    pointer para o início do token
+   */
+
   while (token != NULL) {
     int num = atoi(token);
+    /*
+        Aqui, o atoi, enxerga o token como uma string,
+        e percorre cada caractere convertendo como inteiro, até que
+        encontre o '\0' inserido pelo strtok
+     */
 
     if (num > *first) {
       *first = num;
@@ -32,6 +43,12 @@ void two_greatest(char str[], int *first, int *second) {
     }
 
     token = strtok(NULL, "#");
+    /*
+        Passar null nesta chamada, instrui que o strtok
+        continue a percorrer a string original de onde parou,
+        aqui ele retorna para o início do while, e o procedimento se repete
+        até que token seja NULL, ou seja, ao terminar a string.
+     */
   }
 }
 
@@ -43,15 +60,13 @@ void write_string(char str[]) {
     int num = rand() % 200;
 
     sprintf(buffer, "%d", num);
-    // sprintf() stores values to a character array as a buffer.
+    // sprintf() guarda o valor em um array de chars como buffer
     strcat(str, buffer);
-    // strcat concatenates the current value of the buffer to the string
-    // received as parameter
+    // concatena a string armazenada no buffer à string passada como parametro.
 
     if (i < 9)
       strcat(str, "#");
-    // Then, we also concatenate the char # after every number, until the last
-    // one.
+    // Concatena # ao final de cada número, enquanto não for o último
   }
 }
 
