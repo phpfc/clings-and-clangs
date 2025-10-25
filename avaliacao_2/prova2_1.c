@@ -18,15 +18,37 @@ retornados. incluindo os casos em que o horário seja inválido
 #include <string.h>
 #include <time.h>
 
-void hora(char *str, int *h, int *m, int *s);
+void hora(char *str, int *h, int *m, int *s) {
+  int grupo = 0;
+  // int ehHora = 1;
+
+  for (int i = 0; i < 9; i++) {
+    if ((i + 1) % 3 != 0) {
+      /*
+        Minha primeiro solução era bastante verbosa.
+        Recorrer em blocos condicionais para operar sobre os grupos,
+        tornava necessário a reescrita das etapas das operações.
+        Um array de ponteiros, permite "incrementar" o grupo de forma
+        iterativa.
+       */
+      int *targets[3] = {h, m, s};
+      if (i == 0 || i % 3 == 0) {
+        *targets[grupo] = (str[i] - 48) * 10;
+      } else {
+        *targets[grupo] += str[i] - 48;
+        grupo++;
+      }
+    }
+  }
+};
 
 void get_rand_time(char *str) {
   int nums[3];
   for (int i = 0; i < 3; i++) {
     if (i <= 0) {
-      nums[i] = rand() % 23;
+      nums[i] = rand() % 24;
     } else {
-      nums[i] = rand() % 59;
+      nums[i] = rand() % 60;
     }
   }
 
@@ -52,9 +74,47 @@ void get_rand_time(char *str) {
 }
 
 int main() {
-  char hora[9];
+  char hour[9];
   srand(time(NULL));
 
-  get_rand_time(hora);
-  printf("%s\n", hora);
+  int h = 0, m = 0, s = 0;
+
+  get_rand_time(hour);
+  printf("%s\n", hour);
+  hora(hour, &h, &m, &s);
+  printf("%02d:%02d:%02d\n", h, m, s);
 }
+
+/*
+ if (grupo <= 0) {
+   if (ehHora > 0) {
+     *h = (str[i] - 48) * 10;
+     ehHora *= -1;
+   } else {
+     *h += str[i] - 48;
+     ehHora *= -1;
+   }
+ }
+
+ if (grupo >= 1 && grupo < 2) {
+   if (ehHora > 0) {
+     *m = (str[i] - 48) * 10;
+     ehHora *= -1;
+   } else {
+     *m += str[i] - 48;
+     ehHora *= -1;
+   }
+ }
+
+ if (grupo >= 2) {
+   if (ehHora > 0) {
+     *s = (str[i] - 48) * 10;
+     ehHora *= -1;
+   } else {
+     *s += str[i] - 48;
+     ehHora *= -1;
+   }
+ }
+ Isto é bastante verboso. E pode ser simplificado utilizando um array de
+ pointers
+ */
