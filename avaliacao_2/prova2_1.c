@@ -26,12 +26,18 @@ void hora(char *str, int *h, int *m, int *s) {
     if ((i + 1) % 3 != 0) {
       /*
         Minha primeiro solução era bastante verbosa.
-        Recorrer em blocos condicionais para operar sobre os grupos,
+        Recorrer a blocos condicionais para operar sobre os grupos
         tornava necessário a reescrita das etapas das operações.
         Um array de ponteiros, permite "incrementar" o grupo de forma
         iterativa.
        */
+
+      if (str[i] > '9' || str[i] < '0') {
+        *h = *m = *s = -1;
+        break;
+      }
       int *targets[3] = {h, m, s};
+
       if (i == 0 || i % 3 == 0) {
         *targets[grupo] = (str[i] - 48) * 10;
       } else {
@@ -39,10 +45,22 @@ void hora(char *str, int *h, int *m, int *s) {
         grupo++;
       }
     }
-  }
-};
+  };
 
-void get_rand_time(char *str) {
+  if (*h < 0 || *h > 23 || *m < 0 || *m > 59 || *s < 0 || *s > 59) {
+    *h = *m = *s = -1;
+  }
+  if (strlen(str) != 9) {
+    *h = *m = *s = -1;
+  }
+  if (str[2] != ':' || str[5] != ':') {
+    *h = *m = *s = -1;
+  }
+}
+
+void get_rand_time(char *str, int mal_formatado, int valores_invalidos) {
+  int ascii_shift = valores_invalidos >= 1 ? 90 : 48;
+  char separator = mal_formatado >= 1 ? ' ' : ':';
   int nums[3];
   for (int i = 0; i < 3; i++) {
     if (i <= 0) {
@@ -55,7 +73,7 @@ void get_rand_time(char *str) {
   int grupo = 0;
   for (int i = 0; i < 9; i++) {
     if ((i + 1) % 3 == 0) { // POSICIONA OS SEPARADORES EM POSIÇÕES PREVISTAS
-      str[i] = ':';
+      str[i] = separator;
     }
     if (i >= 8) { // POSICIONA O NULL TERMINATOR
       str[i] = '\0';
@@ -64,9 +82,9 @@ void get_rand_time(char *str) {
     if ((i + 1) % 3 != 0) { // CASO A POSIÇÃO ATUAL NÃO SEJA UM DOS SEPARADORES
       if (i == 0 || (i % 3) == 0) {
         // POSICIONE OS VALORES DAS DECENAS NAS POSIÇÕES 0, 3 E 6
-        str[i] = (nums[grupo] / 10) + 48;
+        str[i] = (nums[grupo] / 10) + ascii_shift;
       } else { // POSICIONE OS VALORES DAS UNIDADES NAS DEMAIS POSIÇÕES
-        str[i] = (nums[grupo] % 10 + 48);
+        str[i] = (nums[grupo] % 10 + ascii_shift);
         grupo++;
       }
     }
@@ -79,9 +97,10 @@ int main() {
 
   int h = 0, m = 0, s = 0;
 
-  get_rand_time(hour);
-  printf("%s\n", hour);
-  hora(hour, &h, &m, &s);
+  // get_rand_time(hour, 0, 0);
+  // printf("%s\n", hour);
+  hora("13!42!32", &h, &m, &s);
+  // hora(hour, &h, &m, &s);
   printf("%02d:%02d:%02d\n", h, m, s);
 }
 
